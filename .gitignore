@@ -1,0 +1,23 @@
+# Python
+__pycache__/
+*.py[cod]
+
+# Virtual environments
+.venv/
+venv/
+.build-venv/
+
+# PyInstaller output (build.bat regenerates the spec too)
+build/
+dist/
+*.spec
+
+# Saved transcripts (personal; the app recreates the folder)
+saved_histories/
+
+# Editor / OS
+.vscode/
+.idea/
+Thumbs.db
+Desktop.ini
+.DS_Store

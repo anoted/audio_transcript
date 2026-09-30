@@ -1,0 +1,4 @@
+faster-whisper>=1.1
+soundcard>=0.4.4
+numpy
+pywin32; sys_platform == "win32"
