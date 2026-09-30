@@ -26,19 +26,17 @@ flowchart LR
     capPc -- "phrase" --> q
     q --> whisper["faster-whisper<br/>(one shared model,<br/>GPU or CPU)"]
     whisper --> ui["Transcript window<br/>[Mic] … / [PC] …"]
-    ui -- "Save / Copy All" --> md["saved_histories/&lt;session&gt;.md"]
+    ui -- "Save / Copy All" --> md["saved_histories/#lt;session#gt;.md"]
 ```
 
 Each capture thread cuts its audio into phrases like this:
 
 ```mermaid
-stateDiagram-v2
-    direction LR
-    [*] --> Listening
-    Listening --> Listening: quiet block<br/>(update noise floor)
-    Listening --> InPhrase: loud block<br/>(keep 0.3 s pre-roll)
-    InPhrase --> InPhrase: speech continues
-    InPhrase --> Listening: 0.6 s silence, or 15 s max<br/>→ queue if ≥ 0.3 s of speech
+flowchart TD
+    listen["Listening<br/>(tracks noise floor)"] -- "loud block" --> phrase["Recording phrase<br/>(with 0.3 s pre-roll)"]
+    phrase -- "0.6 s silence<br/>or 15 s max" --> check{"≥ 0.3 s<br/>of speech?"}
+    check -- "yes" --> queue[["Phrase queue"]]
+    check -- "no, drop" --> listen
 ```
 
 1. Each source is recorded in 100 ms blocks at 16 kHz on its own thread.
