@@ -4,119 +4,91 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <title>Speech Transcriber</title>
-<meta name="description" content="Live, offline speech-to-text for your microphone and computer audio at the same time.">
+<meta name="description" content="Offline live transcription of mic + PC audio.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=STIX+Two+Text:ital,wght@0,400;0,600;0,700;1,400&display=swap" rel="stylesheet">
 <style>
   :root {
-    --bg: #fafaf9; --fg: #1c1917; --muted: #57534e; --line: #e7e5e4;
-    --card: #ffffff; --accent: #2563eb; --mic: #2563eb; --pc: #b45309; --code: #f5f5f4;
+    --bg: #fdfdfb; --fg: #1a1a1a; --muted: #555; --line: #ddd;
+    --accent: #1f4e8c; --mic: #1f4e8c; --pc: #9a4a00; --code: #f3f2ee;
   }
-  @media (prefers-color-scheme: dark) {
-    :root {
-      --bg: #1c1917; --fg: #f5f5f4; --muted: #a8a29e; --line: #292524;
-      --card: #231f1d; --accent: #60a5fa; --mic: #60a5fa; --pc: #fbbf24; --code: #292524;
-    }
-  }
+  html { color-scheme: light; }
   * { box-sizing: border-box; }
   body {
     margin: 0; background: var(--bg); color: var(--fg);
-    font: 16px/1.6 system-ui, -apple-system, "Segoe UI", Roboto, sans-serif;
+    font: 17px/1.45 "STIX Two Text", "Latin Modern Roman", Georgia, "Times New Roman", serif;
   }
-  main { max-width: 860px; margin: 0 auto; padding: 48px 16px 64px; }
-  h1 { font-size: 2.2rem; line-height: 1.2; margin: 0 0 8px; }
-  h2 { font-size: 1.3rem; margin: 48px 0 12px; }
-  p { margin: 0 0 12px; }
-  .lede { font-size: 1.15rem; color: var(--muted); max-width: 60ch; }
+  main { padding: 16px 16px 12px; }
+  header {
+    display: flex; flex-wrap: wrap; align-items: baseline; gap: 4px 16px;
+    border-bottom: 1px solid var(--line); padding-bottom: 8px; margin-bottom: 14px;
+  }
+  h1 { font-size: 1.7rem; margin: 0; font-weight: 700; }
+  header .sub { color: var(--muted); font-style: italic; flex: 1 1 280px; }
+  header nav a { margin-left: 14px; }
+  h2 {
+    font-size: 1.02rem; margin: 14px 0 4px; font-variant: small-caps; letter-spacing: .04em;
+    border-bottom: 1px solid var(--line); padding-bottom: 2px;
+  }
+  h2:first-child { margin-top: 0; }
+  p, ol, ul { margin: 0 0 6px; }
+  ol, ul { padding-left: 20px; }
+  li { margin-bottom: 2px; }
   a { color: var(--accent); }
-  .actions { display: flex; flex-wrap: wrap; gap: 10px; margin: 20px 0 32px; }
-  .btn {
-    display: inline-block; padding: 9px 16px; border-radius: 8px; text-decoration: none;
-    border: 1px solid var(--line); color: var(--fg); background: var(--card); font-weight: 500;
-  }
-  .btn.primary { background: var(--accent); border-color: var(--accent); color: #fff; }
-  @media (prefers-color-scheme: dark) { .btn.primary { color: #111; } }
+  .grid { display: grid; grid-template-columns: minmax(0, 1.15fr) minmax(0, 1fr); gap: 20px; align-items: start; }
   figure { margin: 0; }
-  figure img {
-    width: 100%; height: auto; display: block; border-radius: 10px;
-    border: 1px solid var(--line); box-shadow: 0 8px 30px rgba(0,0,0,.12);
-  }
-  figcaption { color: var(--muted); font-size: .9rem; margin-top: 8px; text-align: center; }
-  .tag { font-family: ui-monospace, Consolas, monospace; font-weight: 600; }
+  figure img { width: 100%; height: auto; display: block; border: 1px solid var(--line); }
+  figcaption { color: var(--muted); font-size: .88rem; margin-top: 4px; }
+  figcaption b { font-weight: 600; color: var(--fg); }
+  .tag { font-family: ui-monospace, Consolas, monospace; font-size: .85em; font-weight: 600; }
   .tag.mic { color: var(--mic); } .tag.pc { color: var(--pc); }
-  .flow { display: grid; gap: 12px; grid-template-columns: repeat(4, 1fr); counter-reset: step; }
-  .step {
-    background: var(--card); border: 1px solid var(--line); border-radius: 10px; padding: 16px;
-  }
-  .step::before {
-    counter-increment: step; content: counter(step);
-    display: inline-grid; place-items: center; width: 26px; height: 26px; border-radius: 50%;
-    background: var(--accent); color: var(--bg); font-weight: 700; font-size: .85rem; margin-bottom: 8px;
-  }
-  .step h3 { margin: 0 0 4px; font-size: 1rem; }
-  .step p { margin: 0; color: var(--muted); font-size: .93rem; }
-  ul { padding-left: 20px; } li { margin-bottom: 6px; }
-  pre {
-    background: var(--code); border: 1px solid var(--line); border-radius: 8px;
-    padding: 14px 16px; overflow-x: auto; font: 14px/1.5 ui-monospace, Consolas, monospace;
-  }
-  code { font-family: ui-monospace, Consolas, monospace; font-size: .92em; }
-  footer { margin-top: 56px; padding-top: 16px; border-top: 1px solid var(--line); color: var(--muted); font-size: .9rem; }
-  @media (max-width: 720px) { .flow { grid-template-columns: 1fr 1fr; } h1 { font-size: 1.8rem; } }
-  @media (max-width: 440px) { .flow { grid-template-columns: 1fr; } }
+  code, pre { font-family: ui-monospace, Consolas, monospace; font-size: .82em; }
+  pre { background: var(--code); border: 1px solid var(--line); padding: 8px 10px; margin: 0 0 6px; overflow-x: auto; }
+  footer { margin-top: 12px; border-top: 1px solid var(--line); padding-top: 6px; color: var(--muted); font-size: .85rem; }
+  @media (max-width: 820px) { .grid { grid-template-columns: 1fr; gap: 12px; } header nav a { margin: 0 14px 0 0; } }
 </style>
 </head>
 <body>
 <main>
-  <h1>Speech Transcriber</h1>
-  <p class="lede">
-    Live, offline speech-to-text for your microphone <em>and</em> computer audio at the same time.
-    You're <span class="tag mic">[Mic]</span>, everyone on the call is <span class="tag pc">[PC]</span>.
-    Save the session as Markdown and hand it to an LLM for a summary and next steps.
-  </p>
-  <div class="actions">
-    <a class="btn primary" href="https://github.com/anoted/audio_transcript">View on GitHub</a>
-    <a class="btn" href="https://github.com/anoted/audio_transcript#install-and-run">Install</a>
-  </div>
+  <header>
+    <h1>Speech Transcriber</h1>
+    <span class="sub">Offline live transcription of mic + PC audio.</span>
+    <nav><a href="https://github.com/anoted/audio_transcript">GitHub</a><a href="https://github.com/anoted/audio_transcript#install-and-run">Install</a></nav>
+  </header>
 
-  <figure>
-    <img src="docs/screenshot.png" width="1004" height="667"
-         alt="Speech Transcriber window showing a meeting transcript with lines labeled [Mic] and [PC]">
-    <figcaption>Both sources transcribed into one timeline, labeled by who said it.</figcaption>
-  </figure>
+  <div class="grid">
+    <figure>
+      <img src="docs/screenshot.png" width="1004" height="667"
+           alt="Speech Transcriber window showing a meeting transcript with lines labeled [Mic] and [PC]">
+      <figcaption><b>Fig. 1.</b> Both sources in one timeline: <span class="tag mic">[Mic]</span> is you,
+        <span class="tag pc">[PC]</span> is whatever plays through your speakers.</figcaption>
+    </figure>
 
-  <h2>How it works</h2>
-  <div class="flow">
-    <div class="step">
-      <h3>Capture</h3>
-      <p>The mic and a loopback of your speakers are each recorded on their own thread in 100&nbsp;ms blocks.</p>
-    </div>
-    <div class="step">
-      <h3>Cut phrases</h3>
-      <p>A running noise floor detects speech. 0.6&nbsp;s of silence ends a phrase; blips under 0.3&nbsp;s are dropped.</p>
-    </div>
-    <div class="step">
-      <h3>Transcribe</h3>
-      <p>One shared faster-whisper model handles phrases from both sources in order, on GPU or CPU.</p>
-    </div>
-    <div class="step">
-      <h3>Save</h3>
-      <p>Ctrl+S writes <code>saved_histories/&lt;session&gt;.md</code> with an LLM-ready instruction on top.</p>
-    </div>
-  </div>
+    <div>
+      <h2>How it works</h2>
+      <ol>
+        <li><b>Capture.</b> Mic and a speaker loopback are each recorded on their own thread in 100&nbsp;ms blocks at 16&nbsp;kHz.</li>
+        <li><b>Segment.</b> A running noise floor detects speech; 0.6&nbsp;s of silence (or 15&nbsp;s max) ends a phrase. Blips under 0.3&nbsp;s are dropped.</li>
+        <li><b>Transcribe.</b> One shared faster-whisper model handles phrases from both sources in arrival order, on GPU or CPU.</li>
+        <li><b>Save.</b> Ctrl+S writes <code>saved_histories/&lt;session&gt;.md</code> with an LLM instruction for a summary and next steps.</li>
+      </ol>
 
-  <h2>Features</h2>
-  <ul>
-    <li>Runs entirely on your machine with <a href="https://github.com/SYSTRAN/faster-whisper">faster-whisper</a>. After the first model download, no network needed.</li>
-    <li>Uses CUDA when it works, otherwise falls back to CPU automatically.</li>
-    <li>Pick <code>tiny.en</code>, <code>base.en</code> or <code>small.en</code> to trade speed for accuracy.</li>
-    <li><strong>Copy All</strong> puts the instruction and transcript on the clipboard in one click.</li>
-    <li>Builds into a single Windows <code>.exe</code> with <code>build.bat</code>.</li>
-  </ul>
+      <h2>Features</h2>
+      <ul>
+        <li>Fully local via <a href="https://github.com/SYSTRAN/faster-whisper">faster-whisper</a>; offline after the first model download.</li>
+        <li>CUDA when available, automatic CPU fallback.</li>
+        <li>Models: <code>tiny.en</code>, <code>base.en</code>, <code>small.en</code>.</li>
+        <li><b>Copy All</b> copies instruction + transcript to the clipboard.</li>
+        <li>Single Windows <code>.exe</code> via <code>build.bat</code>.</li>
+      </ul>
 
-  <h2>Quick start</h2>
+      <h2>Quick start</h2>
 <pre>pip install -r requirements.txt
 python transcriber.py</pre>
-  <p>On Linux, use <code>./setup.sh</code> then <code>./run.sh</code>. See the
-    <a href="https://github.com/anoted/audio_transcript#readme">README</a> for GPU setup and building the exe.</p>
+      <p>Linux: <code>./setup.sh</code> then <code>./run.sh</code>. GPU setup and building: see the <a href="https://github.com/anoted/audio_transcript#readme">README</a>.</p>
+    </div>
+  </div>
 
   <footer>MIT License · <a href="https://github.com/anoted/audio_transcript">anoted/audio_transcript</a></footer>
 </main>

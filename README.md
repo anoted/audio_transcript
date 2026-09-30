@@ -1,9 +1,7 @@
 # Speech Transcriber
 
-Live, offline speech-to-text for your **microphone and computer audio at the same time**.
-Handy for calls and meetings: your side is labeled `[Mic]`, everyone else (whatever plays
-through your speakers) is labeled `[PC]`. Save the session as Markdown, ready to paste into
-an LLM for a summary and action items.
+Offline live transcription of mic + PC audio. You're `[Mic]`, the call is `[PC]`;
+save as Markdown for an LLM to summarize.
 
 ![Speech Transcriber screenshot](docs/screenshot.png)
 
