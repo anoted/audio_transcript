@@ -50,23 +50,24 @@ flowchart TD
 
 ## Install and run
 
-Requires Python 3.10+. The first run downloads the selected Whisper model
-(into `~/.cache/huggingface`); after that it works offline.
+The first run downloads the selected Whisper model (into `~/.cache/huggingface`);
+after that it works offline.
 
-**Windows**
+**Windows: download the exe (no Python needed)**
+
+Grab `transcriber.exe` from the [latest release](https://github.com/anoted/audio_transcript/releases/latest)
+and run it. Transcripts are saved to `saved_histories\` next to the exe.
+
+**Windows: from source** (Python 3.10+)
 
 ```bat
 pip install -r requirements.txt
 python transcriber.py
 ```
 
-Or build a standalone `dist\transcriber.exe` with PyInstaller:
+Build your own `dist\transcriber.exe` with `build.bat`.
 
-```bat
-build.bat
-```
-
-**Linux**
+**Linux** (`setup.sh` and `run.sh` are for Linux only)
 
 ```bash
 ./setup.sh          # add --gpu to also install the CUDA libraries
