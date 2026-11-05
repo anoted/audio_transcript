@@ -1,7 +1,7 @@
 #!/usr/bin/env bash
-# Create .build-venv (once) and install the dependencies into it. Linux; on Windows use build.bat.
-# Usage: ./setup.sh          CPU, or GPU if the CUDA libraries are already on the system
-#        ./setup.sh --gpu    also install the CUDA libraries faster-whisper needs for GPU
+# Create .build-venv (once) and install the dependencies into it. Linux; on Windows use run.bat.
+# Usage: ./setup.sh          CPU only (battery friendly)
+#        ./setup.sh --gpu    also install the CUDA libraries for the "Use GPU" box (Whisper only)
 set -euo pipefail
 cd "$(dirname "$0")"
 PY=.build-venv/bin/python
@@ -14,7 +14,7 @@ fi
 "$PY" -m pip install --disable-pip-version-check -r requirements.txt
 
 if [[ "${1:-}" == "--gpu" ]]; then
-    "$PY" -m pip install nvidia-cublas-cu12 "nvidia-cudnn-cu12==9.*"
+    "$PY" -m pip install --disable-pip-version-check -r requirements-gpu.txt
 fi
 
 echo "Setup done. Start the app with ./run.sh"

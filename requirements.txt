@@ -1,3 +1,4 @@
+onnx-asr[hub]>=0.12
 faster-whisper>=1.1
 soundcard>=0.4.4
 numpy

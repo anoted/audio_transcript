@@ -70,23 +70,22 @@
       <ol>
         <li><b>Capture.</b> Mic and a speaker loopback are each recorded on their own thread in 100&nbsp;ms blocks at 16&nbsp;kHz.</li>
         <li><b>Segment.</b> A running noise floor detects speech; 0.6&nbsp;s of silence (or 15&nbsp;s max) ends a phrase. Blips under 0.3&nbsp;s are dropped.</li>
-        <li><b>Transcribe.</b> One shared faster-whisper model handles phrases from both sources in arrival order, on GPU or CPU.</li>
-        <li><b>Save.</b> Ctrl+S writes <code>saved_histories/&lt;session&gt;.md</code> with an LLM instruction for a summary and next steps.</li>
+        <li><b>Transcribe.</b> One shared model (Parakeet or Whisper) handles phrases from both sources in arrival order, on the CPU.</li>        <li><b>Save.</b> Ctrl+S writes <code>saved_histories/&lt;session&gt;.md</code> with an LLM instruction for a summary and next steps.</li>
       </ol>
 
       <h2>Features</h2>
       <ul>
-        <li>Fully local via <a href="https://github.com/SYSTRAN/faster-whisper">faster-whisper</a>; offline after the first model download.</li>
-        <li>CUDA when available, automatic CPU fallback.</li>
-        <li>Models: <code>tiny.en</code>, <code>base.en</code>, <code>small.en</code>.</li>
+        <li>Fully local; offline after the first model download.</li>
+        <li>Battery friendly: CPU only by default; GPU only when you tick <b>Use GPU</b> (Whisper).</li>
+        <li>English: <b>Parakeet v2</b> (default), Whisper <code>tiny.en</code> / <code>base.en</code> / <code>small.en</code>.</li>
+        <li>Multilingual: <b>Parakeet v3</b>, Whisper <code>base</code> / <code>small</code> / <code>large-v3-turbo</code>.</li>
         <li><b>Copy All</b> copies instruction + transcript to the clipboard.</li>
         <li>Single Windows <code>.exe</code> via <code>build.bat</code>.</li>
       </ul>
 
       <h2>Quick start</h2>
       <p><b>Windows:</b> download <a href="https://github.com/anoted/audio_transcript/releases/latest"><code>transcriber.exe</code></a> from the latest release and run it. Or from source:</p>
-<pre>pip install -r requirements.txt
-python transcriber.py</pre>
+<pre>run.bat</pre>
       <p><b>Linux:</b> <code>./setup.sh</code> then <code>./run.sh</code> (these scripts are Linux-only). GPU setup and building: see the <a href="https://github.com/anoted/audio_transcript#readme">README</a>.</p>
     </div>
   </div>
