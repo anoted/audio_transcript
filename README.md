@@ -60,7 +60,8 @@ flowchart TD
    arrival order, typically 0.1–0.4 s after the phrase ends. A tiny VAD (Silero) skips
    non-speech first, so noise costs almost nothing.
 4. Text lands in the window tagged with its source. The gray line under the transcript shows
-   what's happening live (`hearing speech…`, `transcribing…`).
+   what's happening live (`hearing speech…`, `transcribing…`); the status bar below it shows the
+   model state, including the first-use download, and any errors.
 
 ## Install and run
 
@@ -69,7 +70,7 @@ The first run downloads the selected speech model (into `~/.cache/huggingface`; 
 
 **Windows: download the exe (no Python needed)**
 
-Grab `transcriber.exe` from the [latest release](https://github.com/anoted/audio_transcript/releases/latest)
+Grab `transcriber.exe` (about 100 MB) from the [latest release](https://github.com/anoted/audio_transcript/releases/latest)
 and run it. Transcripts are saved to `saved_histories\` next to the exe.
 
 **Windows: from source** (Python 3.10+)
@@ -100,8 +101,8 @@ discrete GPU can stay asleep on battery. Parakeet on the CPU is slightly faster 
 `base.en` (~0.5 s vs ~0.65 s per 6 s phrase) and more accurate than any Whisper size listed here.
 
 **Use GPU** (Whisper only) needs CUDA 12 cuBLAS and cuDNN 9, from `run.bat --gpu` /
-`./setup.sh --gpu` (`requirements-gpu.txt`). If the GPU can't be used, the app runs on CPU and
-the status bar says `GPU unavailable`.
+`./setup.sh --gpu` (`requirements-gpu.txt`). The exe doesn't bundle them, so it needs those DLLs
+on `PATH`. If the GPU can't be used, the app runs on CPU and the status bar says `GPU unavailable`.
 
 ## Saved file format
 
