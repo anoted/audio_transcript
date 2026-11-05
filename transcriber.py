@@ -305,7 +305,8 @@ class App:
 
         text_frame = ttk.Frame(root, padding=(8, 8, 8, 0))
         text_frame.pack(fill="both", expand=True)
-        self.text = tk.Text(text_frame, wrap="word", font=("Segoe UI", 12), undo=True)
+        # height=1: fill what's left instead of requesting 24 lines, which pushes the status lines off.
+        self.text = tk.Text(text_frame, wrap="word", font=("Segoe UI", 12), undo=True, height=1)
         scroll = ttk.Scrollbar(text_frame, command=self.text.yview)
         self.text.configure(yscrollcommand=scroll.set)
         scroll.pack(side="right", fill="y")
