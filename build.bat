@@ -15,6 +15,12 @@ if not exist "%PY%" (
 )
 "%PY%" -m pip install --quiet --disable-pip-version-check -r requirements.txt pyinstaller || goto :error
 
+rem PyInstaller finds DLLs through PATH. Conda keeps tcl86t.dll, OpenSSL etc. in Library\bin, which
+rem a venv does not put on PATH, so list the base Python first or they get skipped or come from
+rem whichever other Python is on PATH.
+for /f "delims=" %%B in ('%PY% -c "import sys; print(sys.base_prefix)"') do set "BASE=%%B"
+set "PATH=%BASE%;%BASE%\Library\bin;%PATH%"
+
 "%PY%" -m PyInstaller --noconfirm --onefile --windowed ^
     --name transcriber ^
     --icon "%~dp0icon.ico" ^
@@ -23,6 +29,7 @@ if not exist "%PY%" (
     --collect-data faster_whisper ^
     --collect-binaries ctranslate2 ^
     --collect-data onnx_asr ^
+    --copy-metadata onnx-asr ^
     --collect-data soundcard ^
     --exclude-module torch ^
     transcriber.py || goto :error
